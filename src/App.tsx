@@ -3,6 +3,24 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { Shield, Lock, Activity, CheckCircle, XCircle } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import type { Session } from '@supabase/supabase-js';
+
+interface HistoryData {
+  id?: string;
+  date: string;
+  completed_tasks: number;
+  missed_tasks: number;
+  completion_score: number;
+}
+
+interface TaskData {
+  id: string;
+  date: string;
+  time: string;
+  title: string;
+  status: string;
+  synced_at: string;
+}
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -67,8 +85,8 @@ function Login() {
 }
 
 function Dashboard() {
-  const [history, setHistory] = useState<Record<string, unknown>[]>([]);
-  const [tasks, setTasks] = useState<Record<string, unknown>[]>([]);
+  const [history, setHistory] = useState<HistoryData[]>([]);
+  const [tasks, setTasks] = useState<TaskData[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -201,7 +219,7 @@ function Dashboard() {
 }
 
 export default function App() {
-  const [session, setSession] = useState<Record<string, unknown> | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
