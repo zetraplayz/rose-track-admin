@@ -67,20 +67,19 @@ function Login() {
 }
 
 function Dashboard() {
-  const [history, setHistory] = useState<any[]>([]);
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [history, setHistory] = useState<Record<string, unknown>[]>([]);
+  const [tasks, setTasks] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
+    async function fetchData() {
+      const { data: hData } = await supabase.from('history').select('*').order('date', { ascending: true });
+      if (hData) setHistory(hData);
+
+      const { data: tData } = await supabase.from('tasks').select('*').order('time', { ascending: true });
+      if (tData) setTasks(tData);
+    }
     fetchData();
   }, []);
-
-  const fetchData = async () => {
-    const { data: hData } = await supabase.from('history').select('*').order('date', { ascending: true });
-    if (hData) setHistory(hData);
-
-    const { data: tData } = await supabase.from('tasks').select('*').order('time', { ascending: true });
-    if (tData) setTasks(tData);
-  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -202,7 +201,7 @@ function Dashboard() {
 }
 
 export default function App() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
